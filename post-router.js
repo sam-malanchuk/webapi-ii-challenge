@@ -113,4 +113,33 @@ router.delete('/:id', async (req, res) => {
     };
 });
 
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const postData = req.body;
+
+    if(postData.title && postData.contents) {
+        try {
+            const post = await Posts.update(id, postData);
+            if (post) {
+                res.status(200).json({
+                    message: "The post with the specified ID has been updated!"
+                });
+            } else {
+                res.status(404).json({
+                    message: "The post with the specified ID does not exist."
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                error: "The post information could not be modified"
+            });
+        }
+    } else {
+        res.status(400).json({
+            error: "Please provide title and contents for the post."
+        });
+    }
+});
+
 module.exports = router;
